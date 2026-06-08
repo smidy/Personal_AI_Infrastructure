@@ -87,7 +87,6 @@ ARCH="$(uname -m)"
 case "$OS" in
   Darwin) info "Platform: macOS ($ARCH)" ;;
   Linux)  info "Platform: Linux ($ARCH)" ;;
-  *)      error "Unsupported platform: $OS"; exit 1 ;;
 esac
 
 # ─── Check curl ───────────────────────────────────────────

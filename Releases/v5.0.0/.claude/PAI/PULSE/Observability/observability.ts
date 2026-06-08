@@ -24,7 +24,7 @@
  *   GET  /, /work, /telos, /health, etc. — Static Next.js pages (fallback handler)
  */
 
-import { join, extname } from "path"
+import { join, extname, isAbsolute } from "path"
 import { readFileSync, readdirSync, existsSync, realpathSync } from "fs"
 import YAML from "yaml"
 
@@ -147,8 +147,10 @@ function existsSafe(path: string): boolean {
 
 function getDashboardDir(): string {
   const dir = config.dashboard_dir ?? DEFAULT_DASHBOARD_DIR
-  // Resolve relative paths against Pulse directory
-  if (!dir.startsWith("/")) {
+  // Resolve relative paths against the Pulse directory.
+  // Use path.isAbsolute() so Windows absolute paths (C:\..., D:\...) are
+  // detected correctly — startsWith("/") only matches POSIX absolute paths.
+  if (!isAbsolute(dir)) {
     return join(HOME, ".claude", "PAI", "PULSE", dir)
   }
   return dir
