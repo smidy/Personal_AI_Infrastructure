@@ -24,7 +24,7 @@
  */
 
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join, relative, isAbsolute } from "node:path";
 import { homedir } from "node:os";
 
 const ROOT = join(homedir(), ".claude");
@@ -137,7 +137,7 @@ if (args.includes("--self-test")) process.exit(selfTest());
 
 const json = args.includes("--json");
 const targets = args.filter((a) => !a.startsWith("--"));
-const roots = (targets.length ? targets : DEFAULT_SCAN).map((t) => (t.startsWith("/") ? t : join(ROOT, t)));
+const roots = (targets.length ? targets : DEFAULT_SCAN).map((t) => (isAbsolute(t) ? t : join(ROOT, t)));
 
 const files = roots.flatMap((r) => (existsSync(r) && statSync(r).isFile() ? [r] : walk(r)));
 const hits = files.flatMap(scanFile);

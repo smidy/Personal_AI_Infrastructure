@@ -15,7 +15,7 @@
 import Handlebars from 'handlebars';
 import { parse as parseYaml } from 'yaml';
 import { readFileSync, existsSync } from 'fs';
-import { resolve, dirname, basename } from 'path';
+import { resolve, dirname, basename, isAbsolute } from 'path';
 import { parseArgs } from 'util';
 
 // ============================================================================
@@ -42,7 +42,7 @@ interface ValidateOptions {
 // ============================================================================
 
 function resolveTemplatePath(path: string): string {
-  if (path.startsWith('/')) return path;
+  if (isAbsolute(path)) return path;
   const templatesDir = dirname(dirname(import.meta.path));
   return resolve(templatesDir, path);
 }

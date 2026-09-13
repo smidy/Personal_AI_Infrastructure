@@ -27,7 +27,7 @@
  */
 import { existsSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { join, isAbsolute } from "node:path";
 
 const IS_LINUX = process.platform === "linux";
 const HOME = homedir();
@@ -339,7 +339,7 @@ if (cmd === "status" || cmd === "list") {
   let failed = 0, skipped = 0;
   for (const s of targets) {
     const script = scriptOf(s.install);
-    if (script && script.startsWith("/") && !existsSync(script)) {
+    if (script && isAbsolute(script) && !existsSync(script)) {
       console.log(`  ${s.label} … ⏭  skipped (installer not present in this install: ${script.replace(HOME, "~")})`);
       skipped++;
       continue;

@@ -13,7 +13,7 @@
  * One process. One port. One launchd plist. One log file.
  */
 
-import { join } from "path"
+import { join, isAbsolute } from "path"
 import { readFileSync, existsSync } from "fs"
 import { loadLifeosConfig } from "../TOOLS/LifeosConfig"
 import { isLoopbackHostHeader } from "./lib/host-guard.ts"
@@ -526,7 +526,7 @@ function msUntilNextDue(jobs: PulseConfig["jobs"], state: DaemonState): number {
 // /healthz reported "ok". The dashboard asset check makes /healthz truthful.
 function dashboardDir(config: PulseConfig): string {
   const dir = config.observability?.dashboard_dir ?? "Observability/out"
-  return dir.startsWith("/") ? dir : join(PULSE_DIR, dir)
+  return isAbsolute(dir) ? dir : join(PULSE_DIR, dir)
 }
 
 function dashboardHealth(config: PulseConfig): { status: "ok" | "missing"; indexPath: string } {
@@ -1093,7 +1093,7 @@ async function main() {
     // "~/" job gets falsely disabled as "not present on this install".
     const resolveRef = (p: string): string => {
       if (p.startsWith("~/")) return join(homedir(), p.slice(2))
-      return p.startsWith("/") ? p : join(PULSE_DIR, p)
+      return isAbsolute(p) ? p : join(PULSE_DIR, p)
     }
     const missing = scriptRefs.filter((p) => !existsSync(resolveRef(p)))
     if (missing.length > 0) {

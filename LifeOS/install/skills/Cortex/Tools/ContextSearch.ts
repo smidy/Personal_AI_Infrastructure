@@ -2,7 +2,7 @@
 /// <reference types="bun-types" />
 declare const Bun: any;
 import { readFileSync, statSync, existsSync, readdirSync } from "node:fs";
-import { join, basename } from "node:path";
+import { join, basename, isAbsolute } from "node:path";
 import { homedir } from "node:os";
 
 const HOME = homedir();
@@ -268,7 +268,7 @@ function searchWorkJson(tokens: string[], since: Date | null, until: Date | null
       effort: entry.effort,
       score: overlap * multiplier,
       recencyDays: days,
-      path: entry.isa ? (entry.isa.startsWith("/") ? entry.isa : join(LIFEOS_DIR, entry.isa)) : undefined,
+      path: entry.isa ? (isAbsolute(entry.isa) ? entry.isa : join(LIFEOS_DIR, entry.isa)) : undefined,
     });
   }
   out.sort((a, b) => {
@@ -441,7 +441,7 @@ async function searchProjectIsas(tokens: string[], since: Date | null, until: Da
     try {
       const data = JSON.parse(readFileSync(WORK_JSON, "utf8"));
       for (const e of Object.values<any>(data.sessions ?? {})) {
-        if (typeof e?.isa === "string" && e.isa.startsWith("/") && existsSync(e.isa)) candidates.add(e.isa);
+        if (typeof e?.isa === "string" && isAbsolute(e.isa) && existsSync(e.isa)) candidates.add(e.isa);
       }
     } catch {}
   }

@@ -6,7 +6,7 @@
  */
 
 import { readFileSync, existsSync } from 'fs';
-import { join, relative, basename } from 'path';
+import { join, relative, basename, isAbsolute } from 'path';
 import { getLifeosDir, getClaudeDir } from './paths';
 
 // ============================================================================
@@ -232,7 +232,7 @@ export function categorizeChange(path: string): ChangeCategory | null {
   // documentation pipelines never fired for hook or skill work, which is most
   // system work. Measured on a live transcript: 9 file changes, 6 of them
   // hooks, all categorized null and reported "not significant".
-  const absolutePath = path.startsWith('/') ? path : join(CLAUDE_DIR, path);
+  const absolutePath = isAbsolute(path) ? path : join(CLAUDE_DIR, path);
   // Path-boundary test, not string prefix (public issue #1797, @Steffen025).
   if (!isUnderDir(absolutePath, CLAUDE_DIR) && !isUnderDir(absolutePath, LIFEOS_DIR)) {
     return null;

@@ -16,7 +16,7 @@
 import Handlebars from 'handlebars';
 import { parse as parseYaml } from 'yaml';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { resolve, dirname, basename } from 'path';
+import { resolve, dirname, basename, isAbsolute } from 'path';
 import { parseArgs } from 'util';
 
 // ============================================================================
@@ -137,7 +137,7 @@ interface RenderOptions {
 
 function resolveTemplatePath(path: string): string {
   // If absolute, use as-is
-  if (path.startsWith('/')) return path;
+  if (isAbsolute(path)) return path;
 
   // Resolve relative to Templates directory
   const templatesDir = dirname(dirname(import.meta.path));

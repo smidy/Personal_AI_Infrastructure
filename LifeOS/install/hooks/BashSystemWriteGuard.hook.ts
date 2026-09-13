@@ -26,7 +26,7 @@
  */
 
 import { homedir } from "node:os";
-import { resolve, join } from "node:path";
+import { resolve, join, isAbsolute } from "node:path";
 import { classifyTarget, loadPatterns, scanForFirstHit } from "./lib/system-file-guard-core";
 
 const HOME = process.env.HOME ?? homedir();
@@ -57,13 +57,13 @@ export function resolveCandidate(token: string, cmd: string): string | null {
   if (!t || t === "-" || t.startsWith("/dev/")) return null;
   if (t.startsWith("~/")) t = join(HOME, t.slice(2));
   if (t.startsWith("$HOME/")) t = join(HOME, t.slice(6));
-  if (t.startsWith("/")) return t;
+  if (isAbsolute(t)) return t;
   const cd = /(?:^|&&|;)\s*cd\s+([^\s;|&]+)/.exec(cmd);
   if (cd) {
     let base = cd[1]!.replace(/^["']|["']$/g, "");
     if (base.startsWith("~/")) base = join(HOME, base.slice(2));
     if (base.startsWith("$HOME/")) base = join(HOME, base.slice(6));
-    if (base.startsWith("/")) return resolve(base, t);
+    if (isAbsolute(base)) return resolve(base, t);
   }
   // Bare tree-relative shapes (hooks/x.ts, LIFEOS/TOOLS/y.ts) — assume the tree.
   if (/^(hooks|LIFEOS|skills|commands|agents|test)\//.test(t)) return join(CLAUDE_ROOT, t);

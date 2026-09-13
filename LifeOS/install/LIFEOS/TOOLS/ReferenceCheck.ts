@@ -25,7 +25,7 @@
  */
 
 import { readFileSync, statSync, existsSync, readdirSync, realpathSync } from 'fs';
-import { join, resolve, dirname, relative, extname, sep } from 'path';
+import { join, resolve, dirname, relative, extname, sep, isAbsolute } from 'path';
 import { execSync } from 'child_process';
 import { homedir } from "node:os";
 
@@ -455,7 +455,7 @@ function extractRefs(content: string, referringFile: string): RefHit[] {
       // Resolve
       let resolved: string | null = null;
       const candidates: string[] = [];
-      if (raw.startsWith('/')) {
+      if (isAbsolute(raw)) {
         candidates.push(raw);
       } else if (raw.startsWith('./') || raw.startsWith('../')) {
         candidates.push(resolve(refDir, raw));
