@@ -33,6 +33,7 @@
  */
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, basename } from "node:path";
+import { homedir } from "node:os";
 
 const MAX_RATINGS_BYTES = 10_000_000; // guard against a huge/FIFO ratings store
 const MAX_NOTE_CHARS = 500;
@@ -227,7 +228,7 @@ function main(): void {
   const warnings: string[] = [];
   const missing: string[] = [];
 
-  const root = arg("--root") ?? process.env.SKILLSCAN_MEMORY_ROOT ?? join(process.env.HOME ?? ".", ".claude");
+  const root = arg("--root") ?? process.env.SKILLSCAN_MEMORY_ROOT ?? join(process.env.HOME ?? process.env.USERPROFILE ?? homedir(), ".claude");
   const days = intArg("--days", 45, 1, 3650, warnings);
   const maxRating = intArg("--max-rating", 4, 1, 10, warnings);
   const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);

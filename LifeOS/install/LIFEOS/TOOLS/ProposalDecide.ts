@@ -37,8 +37,9 @@ import {
   type DecisionResult,
   type ProposalRow,
 } from "../PULSE/lib/memory-proposals";
+import { homedir } from "os";
 
-const HOME = process.env.HOME ?? "";
+const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir();
 
 function shortFile(row: ProposalRow): string {
   return row.target_file.replace(`${HOME}/.claude/`, "").replace(/^.*\/LIFEOS\//, "LIFEOS/");
