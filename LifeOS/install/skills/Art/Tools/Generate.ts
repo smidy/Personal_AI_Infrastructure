@@ -26,6 +26,7 @@ import Replicate from "replicate";
 import { GoogleGenAI } from "@google/genai";
 import { writeFile, readFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
+import { homedir } from "node:os";
 import { getDAName } from "../../../hooks/lib/identity";
 
 // ============================================================================
@@ -41,7 +42,7 @@ async function loadEnv(): Promise<void> {
   // ~/.claude/LIFEOS SUBdirectory, which has no .env, and the silent catch made
   // present keys invisible (public issue #1515, @xmasyx). Try LIFEOS_DIR first,
   // then the canonical location; load the first that exists.
-  const home = process.env.HOME!;
+  const home = process.env.HOME ?? process.env.USERPROFILE ?? homedir();
   const candidates = Array.from(new Set([
     ...(process.env.LIFEOS_DIR ? [resolve(process.env.LIFEOS_DIR, '.env')] : []),
     resolve(home, '.claude', '.env'),
@@ -121,7 +122,7 @@ const DEFAULTS = {
   model: "nano-banana-pro" as Model,
   size: "2K" as Size,
   // LIFEOS_DOWNLOADS_DIR overrides ~/Downloads when set (public PR #1535, @anikinsasha)
-  output: `${process.env.LIFEOS_DOWNLOADS_DIR || `${process.env.HOME}/Downloads`}/ul-image.png`,
+  output: `${process.env.LIFEOS_DOWNLOADS_DIR || `${process.env.HOME ?? process.env.USERPROFILE ?? homedir()}/Downloads`}/ul-image.png`,
 };
 
 const REPLICATE_SIZES: ReplicateSize[] = ["1:1", "16:9", "3:2", "2:3", "3:4", "4:3", "4:5", "5:4", "9:16", "21:9"];
@@ -224,7 +225,7 @@ async function detectMimeType(filePath: string): Promise<string> {
 // ============================================================================
 
 // LifeOS directory for documentation paths
-const LIFEOS_DIR = process.env.LIFEOS_DIR || `${process.env.HOME}/.claude`;
+const LIFEOS_DIR = process.env.LIFEOS_DIR || `${process.env.HOME ?? process.env.USERPROFILE ?? homedir()}/.claude`;
 
 function showHelp(): void {
   console.log(`
@@ -343,7 +344,7 @@ MORE INFO:
  *   --workflow=<bad-name>   → exit 1 listing valid workflow names.
  */
 function enforceWorkflowDiscipline(parsed: Partial<CLIArgs>): void {
-  const workflowsDir = `${process.env.HOME}/.claude/skills/Art/Workflows`;
+  const workflowsDir = `${process.env.HOME ?? process.env.USERPROFILE ?? homedir()}/.claude/skills/Art/Workflows`;
   let availableWorkflows: string[] = [];
   try {
     // readdirSync via Bun.readdirSync isn't a thing; use Node fs sync via dynamic
@@ -715,7 +716,7 @@ async function stampDaSignature(imagePath: string): Promise<void> {
 }
 
 async function removeBackground(imagePath: string): Promise<string> {
-  const home = process.env.HOME;
+  const home = process.env.HOME ?? process.env.USERPROFILE ?? homedir();
   if (!home) throw new CLIError("HOME not set; cannot resolve rembg binary");
   const rembgBin = process.env.REMBG_BIN || resolve(home, ".local/bin/rembg");
 

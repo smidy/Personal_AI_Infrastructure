@@ -23,6 +23,7 @@ import { DiscordBotClient } from '../Lib/discord-bot.js';
 import { MidjourneyClient, MidjourneyError } from '../Lib/midjourney-client.js';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { homedir } from 'node:os';
 
 // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
 for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
@@ -44,7 +45,7 @@ async function loadEnv(): Promise<void> {
   // ~/.claude/LIFEOS SUBdirectory, which has no .env, and the silent catch made
   // present keys invisible (public issue #1515, @xmasyx). Try LIFEOS_DIR first,
   // then the canonical location; load the first that exists.
-  const home = process.env.HOME!;
+  const home = process.env.HOME ?? process.env.USERPROFILE ?? homedir();
   const candidates = Array.from(new Set([
     ...(process.env.LIFEOS_DIR ? [resolve(process.env.LIFEOS_DIR, '.env')] : []),
     resolve(home, '.claude', '.env'),

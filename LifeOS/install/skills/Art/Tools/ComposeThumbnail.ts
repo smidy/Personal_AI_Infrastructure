@@ -16,6 +16,7 @@
 import { spawn } from "node:child_process";
 import { existsSync, unlinkSync } from "node:fs";
 import { resolve, dirname } from "node:path";
+import { homedir } from "node:os";
 
 // ============================================================================
 // Types
@@ -45,7 +46,7 @@ const DEFAULTS = {
   font: "Helvetica-Bold",       // System font that actually exists
   headshotPosition: "left" as const,
   // LIFEOS_DOWNLOADS_DIR overrides ~/Downloads when set (public PR #1535, @anikinsasha)
-  output: `${process.env.LIFEOS_DOWNLOADS_DIR || `${process.env.HOME}/Downloads`}/yt-thumbnail-${Date.now()}.png`,
+  output: `${process.env.LIFEOS_DOWNLOADS_DIR || `${process.env.HOME ?? process.env.USERPROFILE ?? homedir()}/Downloads`}/yt-thumbnail-${Date.now()}.png`,
 };
 
 const LAYOUT = {

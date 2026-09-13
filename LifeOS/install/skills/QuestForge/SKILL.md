@@ -1,8 +1,9 @@
 ---
 name: QuestForge
+version: 1.0.0
 description: "Turns a user's Telos life-data into a personalized, beneficial video-game concept: reads GOALS/PROBLEMS/MISSION + interests (BOOKS/MOVIES), proposes an evidence-backed help-target, maps it to a game mechanic fused into the core loop, themed in the user's aesthetic. Outputs ranked Game Design one-pagers with honest framing; biases to behavior/mood/mindset, not brain-training; never diagnoses. USE WHEN design a game to help me, gamify a goal/habit, game for my focus/anxiety, turn my Telos into a game, personalized game idea. NOT FOR coding a playable game; generic game reviews; clinical treatment."
-effort: high
 context: fork
+background: false
 ---
 
 ## Customization

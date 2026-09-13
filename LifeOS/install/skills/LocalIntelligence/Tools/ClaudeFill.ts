@@ -20,6 +20,7 @@
  */
 
 import type { Digest, FetchResult, Hometown, Item, SectionKey } from "./Types.ts"
+import { homedir } from "node:os"
 
 const SECTION_ASKS: Record<SectionKey, string> = {
   construction: "new construction projects or notable building permits (last 14 days)",
@@ -98,7 +99,7 @@ function extractJson(text: string): unknown {
 }
 
 async function spawnResearch(prompt: string, model: string, timeoutMs: number): Promise<string> {
-  const claudePath = Bun.which("claude") ?? `${process.env.HOME}/.local/bin/claude`
+  const claudePath = Bun.which("claude") ?? `${process.env.HOME ?? process.env.USERPROFILE ?? homedir()}/.local/bin/claude`
   const env: Record<string, string | undefined> = { ...process.env }
   // Subscription billing + nested-session safety (mirrors Inference.ts).
   delete env.ANTHROPIC_API_KEY

@@ -25,10 +25,11 @@
 
 import { existsSync, readFileSync, writeFileSync, mkdirSync, unlinkSync } from "fs";
 import { join } from "path";
+import { homedir } from "os";
 
 declare const Bun: { spawn: (cmd: string[], opts?: any) => any };
 
-const HOME = process.env.HOME || "";
+const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir();
 const LABEL = "com.lifeos.atlas";
 const IS_LINUX = process.platform === "linux";
 const IS_MACOS = process.platform === "darwin";
